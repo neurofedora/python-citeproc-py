@@ -2,7 +2,7 @@
 
 Name:           python-%{modname}
 Version:        0.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Yet another Python CSL Processor
 
 License:        BSD
@@ -50,28 +50,11 @@ rm -rf *.egg-info
 %py2_install
 %py3_install
 
-pushd %{buildroot}%{_bindir}
-  mv csl_unsorted python3-csl_unsorted
-  sed -i -e '1s|^.*$|#!/usr/bin/env %{__python3}|' python3-csl_unsorted
-  for i in csl_unsorted csl_unsorted-3 csl_unsorted-%{python3_version}
-  do
-    ln -s python3-csl_unsorted $i
-  done
-
-  cp python3-csl_unsorted python2-csl_unsorted
-  sed -i -e '1s|^.*$|#!/usr/bin/env %{__python2}|' python2-csl_unsorted
-  for i in csl_unsorted-2 csl_unsorted-%{python2_version}
-  do
-    ln -s python2-csl_unsorted $i
-  done
-popd
+sed -i -e '1s|^.*$|#!%{__python3}|' %{buildroot}%{_bindir}/csl_unsorted
 
 %files -n python2-%{modname}
 %license LICENSE
 %doc README.rst examples
-%{_bindir}/python2-csl_unsorted
-%{_bindir}/csl_unsorted-2
-%{_bindir}/csl_unsorted-%{python2_version}
 %{python2_sitelib}/citeproc/
 %{python2_sitelib}/citeproc_py*.egg-info/
 
@@ -79,12 +62,12 @@ popd
 %license LICENSE
 %doc README.rst examples
 %{_bindir}/csl_unsorted
-%{_bindir}/python3-csl_unsorted
-%{_bindir}/csl_unsorted-3
-%{_bindir}/csl_unsorted-%{python3_version}
 %{python3_sitelib}/citeproc/
 %{python3_sitelib}/citeproc_py*.egg-info/
 
 %changelog
+* Wed Nov 25 2015 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.3.0-2
+- Only one version of binary
+
 * Wed Nov 11 2015 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.3.0-1
 - Initial package
